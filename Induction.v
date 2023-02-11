@@ -637,8 +637,16 @@ Proof.
       { rewrite mul_0_r. reflexivity. }
     rewrite Hn. rewrite Hm.
     reflexivity.
-  - rewrite <- plus_1_l.
-    rewrite add_comm.
+  - rewrite <- mult_n_Sm.
+    rewrite IHp'.
+    rewrite add_assoc.
+    rewrite <- (mult_n_Sm n p').
+    rewrite <- (mult_n_Sm m p').
+    rewrite add_assoc.
+    assert (Hpermute : n + m * p' = m * p' + n).
+      { rewrite add_comm. reflexivity. }
+    rewrite Hpermute.
+    
 
 Theorem mult_assoc : forall n m p : nat,
   n * (m * p) = (n * m) * p.
