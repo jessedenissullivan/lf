@@ -628,6 +628,7 @@ Qed.
 Theorem mult_plus_distr_r : forall n m p : nat,
   (n + m) * p = (n * p) + (m * p).
 Proof.
+  Set Printing Parentheses.
   intros n m p.
   induction p as [| p' IHp'].
   - rewrite mul_0_r.
@@ -643,9 +644,13 @@ Proof.
     rewrite <- (mult_n_Sm n p').
     rewrite <- (mult_n_Sm m p').
     rewrite add_assoc.
-    assert (Hpermute : n + m * p' = m * p' + n).
-      { rewrite add_comm. reflexivity. }
-    rewrite Hpermute.
+    rewrite <- add_assoc with (n := n * p')(m := n)(p := m * p').
+    rewrite add_comm with (n := n)(m := m * p').
+    rewrite -> add_assoc with (n := n * p')(m := m * p')(p := n).
+    reflexivity.
+Qed.
+    
+    
     
 
 Theorem mult_assoc : forall n m p : nat,
