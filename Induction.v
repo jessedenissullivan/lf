@@ -656,7 +656,16 @@ Qed.
 Theorem mult_assoc : forall n m p : nat,
   n * (m * p) = (n * m) * p.
 Proof.
-  (* FILL IN HERE *) Admitted.
+    intros.
+    induction m.
+    - induction n.
+      + simpl. reflexivity.
+      + simpl. rewrite mul_0_r. Search (0*_). rewrite mult_0_l with (n:=p).
+        reflexivity.
+    -  
+    
+      rewrite <- mult_n_O. 
+      rewrite <- mult_n_0 with  (n := n).
 (** [] *)
 
 (** **** Exercise: 2 stars, standard, optional (add_shuffle3')
