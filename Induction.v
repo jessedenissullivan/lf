@@ -660,14 +660,20 @@ Proof.
     induction m.
     - induction n.
       + simpl. reflexivity.
-      + simpl. rewrite mul_0_r. Search (0*_). rewrite mult_0_l with (n:=p).
+      + simpl. rewrite mul_0_r. rewrite mult_0_l with (n:=p).
         reflexivity.
-    -  
-    
-      rewrite <- mult_n_O. 
-      rewrite <- mult_n_0 with  (n := n).
-(** [] *)
-
+    - rewrite mul_comm with (m:=S m) (n:= p).
+      rewrite <- mult_n_Sm with (n:=n) (m:=m).
+      rewrite <- mult_n_Sm with (n:=p) (m:=m).
+      rewrite mul_comm with (m:=n).
+      rewrite mult_plus_distr_r.
+      rewrite mult_plus_distr_r with (p:=p).
+      rewrite <- IHm.
+      rewrite mul_comm with (m:=n).
+      rewrite mul_comm with (m:=p).
+      rewrite mul_comm with (m:=n)(n:=p).
+      reflexivity.
+Qed.
 (** **** Exercise: 2 stars, standard, optional (add_shuffle3')
 
     The [replace] tactic allows you to specify a particular subterm to
@@ -682,7 +688,12 @@ Proof.
 Theorem add_shuffle3' : forall n m p : nat,
   n + (m + p) = m + (n + p).
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros.
+  rewrite add_assoc''.
+  replace (n + m) with (m + n).
+  rewrite <- add_assoc''. reflexivity.
+  rewrite add_comm. reflexivity.
+Qed.
 (** [] *)
 
 (* ################################################################# *)
@@ -700,11 +711,21 @@ Inductive bin : Type :=
     from [Basics].  That will make it possible for this file to
     be graded on its own. *)
 
-Fixpoint incr (m:bin) : bin
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Fixpoint incr (m:bin) : bin :=
+  match m with
+  | Z => B1 Z
+  | B1 Z => B0 (B1 Z)
+  | B0 m' => B1 m'
+  | B1 m' => B0 (incr m')
+  end.
 
-Fixpoint bin_to_nat (m:bin) : nat
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Fixpoint bin_to_nat (m:bin) : nat :=
+  match m with
+  | Z => 0
+  | B1 Z => 1
+  | B0 m' => 1 + (bin_to_nat m')
+  | B1 m' => 2 + (bin_to_nat m')
+  end.
 
 (** In [Basics], we did some unit testing of [bin_to_nat], but we
     didn't prove its correctness. Now we'll do so. *)
@@ -732,7 +753,10 @@ Fixpoint bin_to_nat (m:bin) : nat
 Theorem bin_to_nat_pres_incr : forall b : bin,
   bin_to_nat (incr b) = 1 + bin_to_nat b.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros.
+  induction b.
+  - simpl. reflexivity.
+  - simpl (incr (B0 b)). replace 
 
 (** [] *)
 
